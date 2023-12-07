@@ -16,10 +16,15 @@ class Node:
 
 
 class Edge:
-    def __init__(self, from_node: Node, to_node: Node, weight: float):
+    def __init__(self, name, from_node: Node, to_node: Node, weight: float):
+        self.name = name
         self.from_node = from_node
         self.to_node = to_node
         self.weight = weight
+    
+    @classmethod
+    def from_nodes(cls, from_node: Node, to_node: Node, weight: float):
+        return cls(f"Edge", from_node, to_node, weight)
 
     def can_traverse(self) -> bool:
         return self.from_node.is_traversed() and self.from_node.distance + self.weight < self.to_node.distance
@@ -29,7 +34,7 @@ class Edge:
         self.to_node.predecessor = self.from_node
 
     def __repr__(self):
-        return f"{self.from_node} -> {self.to_node}: {self.weight:+}"
+        return f"{self.name}: {self.from_node} -> {self.to_node} ({self.weight:+})"
 
 
 class Graph:
@@ -128,9 +133,9 @@ if __name__ == "__main__":
     graph.add_node(node_c)
 
     # Add edges
-    graph.add_edge(Edge(node_a, node_b, 2))
-    graph.add_edge(Edge(node_b, node_c, -5))
-    graph.add_edge(Edge(node_c, node_a, 2))
+    graph.add_edge(Edge("Edge 1",node_a, node_b, 2))
+    graph.add_edge(Edge("Edge 2", node_b, node_c, -5))
+    graph.add_edge(Edge("Edge 3", node_c, node_a, 2))
 
     print("Graph created:")
     print(graph)

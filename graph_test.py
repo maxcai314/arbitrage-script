@@ -21,16 +21,16 @@ graph.add_node(node_4)
 graph.add_node(node_5)
 
 # Add edges
-graph.add_edge(Edge(node_source, node_1, 1))
-graph.add_edge(Edge(node_source, node_5, 3))
-graph.add_edge(Edge(node_1, node_source, 2))
-graph.add_edge(Edge(node_2, node_1, 1.5))
-graph.add_edge(Edge(node_1, node_2, 1.5))
-graph.add_edge(Edge(node_2, node_3, 3))
-graph.add_edge(Edge(node_2, node_3, -1))  # duplicate, should take better (negative) path
-graph.add_edge(Edge(node_3, node_4, 3))
-graph.add_edge(Edge(node_4, node_5, -5))
-graph.add_edge(Edge(node_5, node_1, 1))
+graph.add_edge(Edge.from_nodes(node_source, node_1, 1))
+graph.add_edge(Edge.from_nodes(node_source, node_5, 3))
+graph.add_edge(Edge.from_nodes(node_1, node_source, 2))
+graph.add_edge(Edge.from_nodes(node_2, node_1, 1.5))
+graph.add_edge(Edge.from_nodes(node_1, node_2, 1.5))
+graph.add_edge(Edge.from_nodes(node_2, node_3, 3))
+graph.add_edge(Edge.from_nodes(node_2, node_3, -1))  # duplicate, should take better (negative) path
+graph.add_edge(Edge.from_nodes(node_3, node_4, 3))
+graph.add_edge(Edge.from_nodes(node_4, node_5, -5))
+graph.add_edge(Edge.from_nodes(node_5, node_1, 1))
 
 print("Graph created:")
 print(f"Nodes: {graph.nodes}")
