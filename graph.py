@@ -143,7 +143,7 @@ if __name__ == "__main__":
         loop_cost = 0
         print("Cycle found:")
         for i in range(1, len(cycle)):
-            edge_taken = max([edge for edge in edge_lookup[cycle[i-1]] if edge.to_node == cycle[i]])
+            edge_taken = min([edge for edge in edge_lookup[cycle[i-1]] if edge.to_node == cycle[i]], key=lambda x: x.weight)
             print(edge_taken)
             loop_cost += edge_taken.weight
         print(f"Total cost: {loop_cost}")
