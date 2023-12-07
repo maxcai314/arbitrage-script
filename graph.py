@@ -111,6 +111,8 @@ class Graph:
                     # prune the cycle to remove the part before the cycle
                     current_cycle.reverse()
                     current_cycle = current_cycle[current_cycle.index(current_node):]
+                    # convert to edge list
+                    current_cycle = [min([edge for edge in edge_lookup_dict[current_cycle[i]] if edge.to_node == current_cycle[i+1]], key=lambda x: x.weight) for i in range(len(current_cycle)-1)]
                     cycles_found.append(current_cycle)
         return cycles_found
 
@@ -145,10 +147,9 @@ if __name__ == "__main__":
     cycles = graph.find_cycles(node_a)
     edge_lookup = graph.edge_dict()
     for cycle in cycles:
-        loop_cost = 0
         print("Cycle found:")
-        for i in range(1, len(cycle)):
-            edge_taken = min([edge for edge in edge_lookup[cycle[i-1]] if edge.to_node == cycle[i]], key=lambda x: x.weight)
+        loop_cost = 0
+        for edge_taken in cycle:
             print(edge_taken)
             loop_cost += edge_taken.weight
         print(f"Total cost: {loop_cost}")

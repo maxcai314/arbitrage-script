@@ -41,10 +41,10 @@ print("Looking for cycles...")
 cycles = graph.find_cycles(node_source)
 edge_lookup = graph.edge_dict()
 for cycle in cycles:
-    loop_cost = 0
     print("Cycle found:")
-    for i in range(1, len(cycle)):
-        edge_taken = min([edge for edge in edge_lookup[cycle[i-1]] if edge.to_node == cycle[i]], key=lambda x: x.weight)
+    loop_cost = 0
+    for edge_taken in cycle:
         print(edge_taken)
         loop_cost += edge_taken.weight
     print(f"Total cost: {loop_cost}")
+    
