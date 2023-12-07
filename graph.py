@@ -12,7 +12,7 @@ class Node:
         return self.distance != float("inf")
 
     def __repr__(self):
-        return f"Node {self.name}: {self.distance}"
+        return self.name
 
 
 class Edge:
@@ -29,7 +29,7 @@ class Edge:
         self.to_node.predecessor = self.from_node
 
     def __repr__(self):
-        return f"Edge from {self.from_node.name} to {self.to_node.name}: {self.weight}"
+        return f"{self.from_node} -> {self.to_node}: {self.weight:+}"
 
 
 class Graph:
@@ -57,22 +57,28 @@ class Graph:
     def num_edges(self):
         return len(self.edges)
 
+    def edge_dict(self):
+        edge_dict = dict.fromkeys(self.nodes)
+        for entry in edge_dict:
+            edge_dict[entry] = []
+        for edge in self.edges:
+            edge_dict[edge.from_node].append(edge)
+        return edge_dict
+
     def find_cycles(self, start_node: Node):
         # uses the Bellman-Ford algorithm to find negative cycles
         self.reset()
         start_node.distance = 0
 
         # create a lookup table for edges
-        edge_dict = dict.fromkeys(self.nodes, [])
-        for edge in self.edges:
-            edge_dict[edge.from_node].append(edge)
+        edge_lookup_dict = self.edge_dict()
 
         # relax all edges n-1 times
         update_nodes = [start_node]
         for i in range(self.num_nodes() - 1):
             new_update_nodes = []
             for node in update_nodes:
-                for edge in edge_dict[node]:
+                for edge in edge_lookup_dict[node]:
                     if edge.can_traverse():
                         edge.traverse()
                         new_update_nodes.append(edge.to_node)
@@ -81,7 +87,7 @@ class Graph:
         # check for any possible updates
         cycles_found = []
         for node in update_nodes:
-            for edge in edge_dict[node]:
+            for edge in edge_lookup_dict[node]:
                 if edge.can_traverse():
                     # trace back the predecessors: should find circular path
                     current_cycle = [edge.to_node, edge.from_node]
@@ -103,6 +109,9 @@ class Graph:
                     cycles_found.append(current_cycle)
         return cycles_found
 
+    def __repr__(self):
+        return f"Graph: {self.nodes}; {self.edges}"
+
 
 if __name__ == "__main__":
     # Create graph
@@ -123,10 +132,18 @@ if __name__ == "__main__":
     graph.add_edge(Edge(node_b, node_c, -5))
     graph.add_edge(Edge(node_c, node_a, 2))
 
+    print("Graph created:")
+    print(graph)
+    print("Looking for cycles...")
+
     # Find cycles
     cycles = graph.find_cycles(node_a)
-
+    edge_lookup = graph.edge_dict()
     for cycle in cycles:
-        output = "Cycle found: "
-        for node in cycle[:-1]:
-            output += node.name + " -> "
+        loop_cost = 0
+        print("Cycle found:")
+        for i in range(1, len(cycle)):
+            edge_taken = max([edge for edge in edge_lookup[cycle[i-1]] if edge.to_node == cycle[i]])
+            print(edge_taken)
+            loop_cost += edge_taken.weight
+        print(f"Total cost: {loop_cost}")
