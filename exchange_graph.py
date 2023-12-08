@@ -73,10 +73,14 @@ if __name__ == "__main__":
     network.add_exchange(Exchange("Uniswap", usdc, eth, 1/2000))
     network.add_exchange(Exchange("Forgswap", eth, curry, 500))
     network.add_exchange(Exchange("Forgswap", curry, chop, 2))
+
+    # With only SensibleSwap, no arbitrage opportunities are found
+    # With TrashSwap, arbitrage opportunities are found
     network.add_exchange(Exchange("TrashSwap", chop, usdc, 1.5))  # supposed to be 2, like SensibleSwap
     network.add_exchange(Exchange("TrashSwap", usdc, chop, 1/1.5))  # supposed to be 1/2, like SensibleSwap
     # network.add_exchange(Exchange("SensibleSwap", chop, usdc, 2))
     # network.add_exchange(Exchange("SensibleSwap", usdc, chop, 1/2))
+
     network.add_exchange(Exchange("ChopExchange", chop, curry, 0.5))
     network.add_exchange(Exchange("ChopExchange", curry, usdc, 4))
 
