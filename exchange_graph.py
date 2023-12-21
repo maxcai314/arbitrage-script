@@ -50,7 +50,8 @@ class ExchangeGraph:
         return self.graph.find_cycles(source)
 
     def __repr__(self):
-        return f"Tokens: {self.tokens}; Exchanges: {self.exchanges}\nGraph: {self.graph}"
+        exchanges_str = '{\n' + ',\n  '.join("\t" + str(exchange) for exchange in self.exchanges) + '\n}'
+        return f"Tokens: {self.tokens};\nExchanges: {exchanges_str};"
 
 
 if __name__ == "__main__":
