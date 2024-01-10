@@ -13,8 +13,9 @@ w3 = Web3(Web3.HTTPProvider("https://mainnet.base.org"))
 
 import os
 import json
+import time
 
-contract_address = "0x2626664c2603336E57B271c5C0b26F421741e481"
+contract_address = "0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a" # checksum address: case sensitive
 filename = f"{contract_address}.json"
 path = os.path.join(".", "abi", filename)
 
@@ -23,5 +24,17 @@ with open(path, "r") as file:
 
 contract = w3.eth.contract(address=contract_address, abi=abi)
 
-for function_name in contract.functions:
-    print(function_name)
+# for function_name in contract.functions:
+    # print(function_name)
+
+quoter = contract.functions.quoteExactInputSingle
+params = (
+    Web3.to_checksum_address("0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca"), # tokenIn
+    Web3.to_checksum_address("0x0000000000000000000000000000000000000000"), # tokenOut
+    100, # amountIn
+    500, # fee
+    0, # sqrtPriceLimitX96
+)
+
+result = quoter(params).call()
+print(result)
