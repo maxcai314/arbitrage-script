@@ -56,7 +56,7 @@ params = (
     usdbc_address, # tokenOut
     input_value, # amountIn
     500, # fee
-    0, # sqrtPriceLimitX96
+    0, # sqrtPriceLimitX96 (0 for unused)
 )
 
 print(f"Finding the value of {input_amount} eth in usdbc on uniswap")
