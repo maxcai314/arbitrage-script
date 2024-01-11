@@ -66,5 +66,5 @@ print(f"""
 Amount out: {result[0] / 10 ** usdbc_decimals} usdbc
 Sqrt 96 price after: {result[1]}
 Initialized ticks crossed: {result[2]}
-gasEstimate: {result[3]}
+Gas estimate: {result[3]}
 """)
