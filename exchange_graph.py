@@ -4,7 +4,16 @@ from math import log
 
 # An ETH token, represented by a node
 class Token(Node):
-    pass
+    def __init__(self, name, address, decimals=18):
+        super().__init__(name)
+        self.address = address
+        self.decimals = decimals
+    
+    def value2int(self, value: float) -> int:
+        return int(value * 10 ** self.decimals)
+    
+    def int2value(self, int_value: int) -> float:
+        return int_value / 10. ** self.decimals
 
 
 SWAP_FEE = 0.005  # 0.5%
@@ -58,10 +67,10 @@ if __name__ == "__main__":
     network = ExchangeGraph()
 
     # Create tokens
-    eth = Token("ETH")
-    usdc = Token("USDC")  # worth 1/2000 ETH
-    curry = Token("CurryCoin")  # worth 1/500 ETH
-    chop = Token("ChopCoin")  # worth 1/1000 ETH
+    eth = Token("ETH", "0x00")
+    usdc = Token("USDC", "0x01")  # worth 1/2000 ETH
+    curry = Token("CurryCoin", "0x02")  # worth 1/500 ETH
+    chop = Token("ChopCoin", "0x03")  # worth 1/1000 ETH
 
     # Add tokens
     network.add_token(eth)
