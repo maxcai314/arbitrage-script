@@ -64,28 +64,41 @@ contract = w3.eth.contract(address=contract_address, abi=abi)
 # for function_name in contract.functions:
     # print(function_name)
 
-usdbc = tokenFor("0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca")
+quoter = contract.functions.quoteExactInputSingle
+
+def exchangeRateOf(token_from: Token, token_to: Token, amount_in: float = 0.1) -> float:
+    params = (
+        token_from.address, # tokenIn
+        token_to.address, # tokenOut
+        token_from.value2int(amount_in), # amountIn
+        3000, # fee tier (500, 3000, 10000)
+        0, # sqrtPriceLimitX96 (0 for unused)
+    )
+
+    result = quoter(params).call()
+    amount_out = token_to.int2value(result[0])
+    return amount_out / amount_in
+
 
 weth = tokenFor("0x4200000000000000000000000000000000000006")
+usdbc = tokenFor("0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca")
 
-input_value = 1 # eth
-input_int = weth.value2int(input_value) # convert to smallest decimal unit
+tokens = {
+    weth: 0.004, # roughly 10 dollars
+    usdbc: 10., # roughly 10 dollars
+    tokenFor("0x50c5725949a6f0c72e6c4a641f24049a917db0cb"): 10., # DAI
+}
 
-quoter = contract.functions.quoteExactInputSingle
-params = (
-    weth.address, # tokenIn
-    usdbc.address, # tokenOut
-    input_int, # amountIn
-    500, # fee tier (500, 3000, 10000)
-    0, # sqrtPriceLimitX96 (0 for unused)
-)
+assert weth in tokens # pedantic, we need weth as a starting node
 
-print(f"Finding the value of {input_value} eth in usdbc on uniswap")
+graph = ExchangeGraph()
+for start_token in tokens:
+    graph.add_token(start_token)
+    for end_token in tokens:
+        if start_token == end_token:
+            continue
+        graph.add_token(end_token)
+        exchange_rate = exchangeRateOf(start_token, end_token, amount_in=tokens[start_token])
+        graph.add_exchange(Exchange("Uniswap", start_token, end_token, exchange_rate))
 
-result = quoter(params).call()
-print(f"""
-Amount out: {usdbc.int2value(result[0])} usdbc
-Sqrt 96 price after: {result[1]}
-Initialized ticks crossed: {result[2]}
-Gas estimate: {result[3]}
-""")
+print(graph)
