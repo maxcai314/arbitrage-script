@@ -101,4 +101,17 @@ for start_token in tokens:
         exchange_rate = exchangeRateOf(start_token, end_token, amount_in=tokens[start_token])
         graph.add_exchange(Exchange("Uniswap", start_token, end_token, exchange_rate))
 
+print("Graph created:")
 print(graph)
+print("Looking for arbitrage opportunities...")
+
+opportunities = graph.find_arbitrage(weth)
+for opportunity in opportunities:
+    print("Arbitrage opportunity found:")
+    exchange_rate = 1
+    for swap_taken in opportunity:
+        print(swap_taken)
+        exchange_rate *= swap_taken.rate
+    print(f"Overall exchange rate: {exchange_rate}")
+if not opportunities:
+    print("No arbitrage opportunities found.")
